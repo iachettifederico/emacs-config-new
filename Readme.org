@@ -134,10 +134,20 @@ Don't allow lines to overflow the screen
 
 * Global keybindings
 
+** Define keybindings on the fly
+
 Use =H-k= to define keybindings on the fly
 
 #+begin_src emacs-lisp
   (global-set-key (kbd "H-k") 'global-set-key)
+#+end_src
+
+** Finding files
+
+Find files in the current project
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "H-f") 'project-find-file)
 #+end_src
 
 * Try
