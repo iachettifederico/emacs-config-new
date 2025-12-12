@@ -124,6 +124,14 @@ Don't allow lines to overflow the screen
   (setq-default word-wrap t)
 #+end_src
 
+* Global keybindings
+
+Use =H-k= to define keybindings on the fly
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "H-k") 'global-set-key)
+#+end_src
+
 * Try
 
 Try packages on the fly without the need to install them.
