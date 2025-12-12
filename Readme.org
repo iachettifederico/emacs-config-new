@@ -150,6 +150,27 @@ Find files in the current project
   (global-set-key (kbd "H-f") 'project-find-file)
 #+end_src
 
+* Window movement
+
+** Winner mode
+
+Navigate window configuration history
+
+#+begin_src emacs-lisp
+  (winner-mode 1)
+#+end_src
+
+** Global keybindings
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "H-<left>")  'windmove-left)
+  (global-set-key (kbd "H-<right>") 'windmove-right)
+  (global-set-key (kbd "H-<up>")    'windmove-up)
+  (global-set-key (kbd "H-<down>")  'windmove-down)
+
+  (global-set-key (kbd "H-w") 'balance-windows)
+#+end_src
+
 * Dired
 
 This line enables =dired-find-alternate-file=, which allows you to open a file from dired using the =a= keybinding without being promped.
