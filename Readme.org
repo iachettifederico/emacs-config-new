@@ -4,11 +4,19 @@
 
 * Initial configuration (must be at the beginning)
 
+** Start the Emacs server
+
+We start the server in order to be able to use =emacsclient=.
+
 #+begin_src emacs-lisp
   (require 'server)
   (unless (server-running-p)
     (server-start))
+#+end_src
 
+** Set up and initialize package manager
+
+#+begin_src emacs-lisp
   (require 'package)
   (setq package-user-dir (expand-file-name "elpa/" user-emacs-directory))
 
@@ -22,12 +30,18 @@
   (unless (package-installed-p 'use-package)
     (package-refresh-contents)
     (package-install 'use-package))
+#+end_src
 
+** Set up =use-package=
+
+#+begin_src emacs-lisp
   (require 'use-package)
   (setq use-package-always-ensure t)
 #+end_src
 
 * Interface tweaks
+
+Small interface tweaks to simplify the look and feel
 
 #+begin_src emacs-lisp
   (setq inhibit-startup-message t)
@@ -58,8 +72,9 @@ Reload file with =<f5>=
 
 ** Word and line wrap
 
+Don't allow lines to overflow the screen
+
 #+begin_src emacs-lisp
-  ;; (global-visual-line-mode t)
   (setq-default truncate-lines nil)
   (setq-default word-wrap t)
 #+end_src
