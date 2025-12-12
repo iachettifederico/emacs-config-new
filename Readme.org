@@ -54,6 +54,26 @@ Small interface tweaks to simplify the look and feel
   (setq ring-bell-function 'ignore)
 #+end_src
 
+* Appearance
+
+** Theme
+
+*** ir-black
+
+#+begin_src emacs-lisp
+  (use-package ir-black-theme
+    :ensure t
+    :config
+    (load-theme 'ir-black t))
+#+end_src
+
+*** Disable other themes
+
+#+begin_src emacs-lisp
+  (mapc #'disable-theme custom-enabled-themes)
+  (load-theme 'ir-black t)
+#+end_src
+
 * Configurations
 
 ** Buffer
