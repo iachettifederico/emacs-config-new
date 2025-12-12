@@ -160,3 +160,17 @@ Discover available keybindings.
   (require 'which-key)
   (which-key-mode)
 #+end_src
+
+* Completion UI
+
+** Vertico
+
+Vertico provides a vertical completion UI using Emacs' built-in completion system.
+It improves `completing-read` without introducing external frameworks.
+
+#+begin_src emacs-lisp
+  (use-package vertico
+    :init
+    (vertico-mode 1))
+#+end_src
+
