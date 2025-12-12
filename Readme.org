@@ -257,3 +257,15 @@ Marginalia adds annotations to minibuffer completion candidates, making them eas
     :init
     (marginalia-mode))
 #+end_src
+
+* Ruby
+
+** Direnv
+
+We load the current Ruby environment from `.envrc` files using `envrc-mode`, which integrates `direnv` into Emacs. This ensures Emacs sees the same Ruby version and gems as the terminal.
+
+#+begin_src emacs-lisp
+(use-package envrc
+  :init
+  (envrc-global-mode))
+#+end_src
