@@ -2,6 +2,14 @@
 
 #+STARTUP: overview
 
+* Introduction
+
+This =Readme.org= file is the entry point to my Emacs configuration. It uses =org-babel= to create a literate, modular setup.
+
+The way this works is that this =org-mode= file contains both descriptive text explaining each part of the configuration, and source code blocks that define the actual behavior. When processed by =org-babel=, the code blocks are "tangled" into a =Readme.el= file, which is then loaded by Emacs on startup.
+
+In other words: every piece of Emacs Lisp in this file *is* the real configuration I use. Neat, right?
+
 * Initial configuration (must be at the beginning)
 
 ** Start the Emacs server
