@@ -74,6 +74,20 @@ Small interface tweaks to simplify the look and feel
   (load-theme 'ir-black t)
 #+end_src
 
+** Indentation Guides
+
+Highlight the indentation level of programming files
+
+#+begin_src emacs-lisp
+(use-package indent-guide
+  :ensure t
+  :hook ((prog-mode yaml-mode) . indent-guide-mode)
+  :custom
+  (indent-guide-char "│")
+  (indent-guide-delay 0.1)
+  (indent-guide-recursive t))
+#+end_src
+
 * Configurations
 
 ** Buffer
