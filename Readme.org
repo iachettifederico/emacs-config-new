@@ -78,3 +78,14 @@ Don't allow lines to overflow the screen
   (setq-default truncate-lines nil)
   (setq-default word-wrap t)
 #+end_src
+
+* Try
+
+Try packages on the fly without the need to install them.
+
+Once emacs is restarted, the package goes away.
+
+#+begin_src emacs-lisp
+  (use-package try :ensure t)
+#+end_src
+
