@@ -291,3 +291,31 @@ We load the current Ruby environment from `.envrc` files using `envrc-mode`, whi
     :init
     (envrc-global-mode))
 #+end_src
+
+* LSP support
+
+We use `lsp-mode` for language server integration. Per-language configuration lives in dedicated sections below.
+
+#+begin_src emacs-lisp
+  (use-package lsp-mode
+    :commands (lsp lsp-deferred)
+    :custom
+    (lsp-enable-symbol-highlighting t)
+    (lsp-headerline-breadcrumb-enable nil)
+    (lsp-completion-provider :none)) ;; we'll add UI/completion separately
+#+end_src
+
+** LSP keybindings
+
+#+begin_src emacs-lisp
+  (with-eval-after-load 'lsp-mode
+    (global-set-key (kbd "H-=") #'lsp-format-buffer))
+#+end_src
+
+** Ruby LSP
+
+Use `ruby-lsp`, installed via the Gemfile and automatically discovered via `direnv`.
+
+#+begin_src emacs-lisp
+  (add-hook 'ruby-ts-mode-hook #'lsp-deferred)
+#+end_src
