@@ -150,6 +150,13 @@ Find files in the current project
   (global-set-key (kbd "H-f") 'project-find-file)
 #+end_src
 
+* Dired
+
+This line enables =dired-find-alternate-file=, which allows you to open a file from dired using the =a= keybinding without being promped.
+
+#+begin_src emacs-lisp
+  (put 'dired-find-alternate-file 'disabled nil)
+#+end_src
 * Try
 
 Try packages on the fly without the need to install them.
