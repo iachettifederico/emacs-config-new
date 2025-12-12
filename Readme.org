@@ -171,6 +171,13 @@ Navigate window configuration history
   (global-set-key (kbd "H-w") 'balance-windows)
 #+end_src
 
+* Bookmarks
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "H-0") 'bookmark-jump)
+  (global-set-key (kbd "H-)") 'bookmark-set)
+#+end_src
+
 * Dired
 
 This line enables =dired-find-alternate-file=, which allows you to open a file from dired using the =a= keybinding without being promped.
