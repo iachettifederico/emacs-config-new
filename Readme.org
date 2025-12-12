@@ -174,3 +174,15 @@ It improves `completing-read` without introducing external frameworks.
     (vertico-mode 1))
 #+end_src
 
+** Orderless
+
+Orderless improves the way Emacs matches completion candidates. Instead of matching strictly from the beginning, it lets you type space-separated components in any order.
+
+#+begin_src emacs-lisp
+  (use-package orderless
+    :init
+    (setq completion-styles '(orderless)
+          completion-category-defaults nil))
+#+end_src
+
+
