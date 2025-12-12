@@ -208,16 +208,16 @@ Orderless improves the way Emacs matches completion candidates. Instead of match
 Consult provides a set of powerful search and navigation commands, enhancing the built-in Emacs UX.
 
 #+begin_src emacs-lisp
-(use-package consult
-  :bind
-  (("C-s" . consult-line)                  ;; search in current buffer
-   ("C-x b" . consult-buffer)              ;; switch buffer
-   ("C-x 4 b" . consult-buffer-other-window)
-   ("M-y" . consult-yank-pop)              ;; show kill ring
-   ("C-c f" . consult-find)                ;; find files recursively
-   ;; ("C-c g" . consult-git-grep)            ;; search in git project
-   ("C-c r" . consult-ripgrep)             ;; ripgrep (needs to be installed)
-   ("C-c m" . consult-imenu)))             ;; jump to symbol in buffer
+  (use-package consult
+    :bind
+    (("C-s" . consult-line)                  ;; search in current buffer
+     ("C-x b" . consult-buffer)              ;; switch buffer
+     ("C-x 4 b" . consult-buffer-other-window)
+     ("M-y" . consult-yank-pop)              ;; show kill ring
+     ("C-c f" . consult-find)                ;; find files recursively
+     ;; ("C-c g" . consult-git-grep)            ;; search in git project
+     ("C-c r" . consult-ripgrep)             ;; ripgrep (needs to be installed)
+     ("C-c m" . consult-imenu)))             ;; jump to symbol in buffer
 #+end_src
 
 ** Marginalia
@@ -225,7 +225,7 @@ Consult provides a set of powerful search and navigation commands, enhancing the
 Marginalia adds annotations to minibuffer completion candidates, making them easier to understand and choose.
 
 #+begin_src emacs-lisp
-(use-package marginalia
-  :init
-  (marginalia-mode))
+  (use-package marginalia
+    :init
+    (marginalia-mode))
 #+end_src
