@@ -89,3 +89,13 @@ Once emacs is restarted, the package goes away.
   (use-package try :ensure t)
 #+end_src
 
+* Which key
+
+Discover available keybindings.
+
+#+begin_src emacs-lisp
+  (which-key-setup-side-window-bottom)
+
+  (require 'which-key)
+  (which-key-mode)
+#+end_src
