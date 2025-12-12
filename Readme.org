@@ -157,6 +157,7 @@ This line enables =dired-find-alternate-file=, which allows you to open a file f
 #+begin_src emacs-lisp
   (put 'dired-find-alternate-file 'disabled nil)
 #+end_src
+
 * Try
 
 Try packages on the fly without the need to install them.
@@ -202,4 +203,20 @@ Orderless improves the way Emacs matches completion candidates. Instead of match
           completion-category-defaults nil))
 #+end_src
 
+** Consult
+
+Consult provides a set of powerful search and navigation commands, enhancing the built-in Emacs UX.
+
+#+begin_src emacs-lisp
+(use-package consult
+  :bind
+  (("C-s" . consult-line)                  ;; search in current buffer
+   ("C-x b" . consult-buffer)              ;; switch buffer
+   ("C-x 4 b" . consult-buffer-other-window)
+   ("M-y" . consult-yank-pop)              ;; show kill ring
+   ("C-c f" . consult-find)                ;; find files recursively
+   ;; ("C-c g" . consult-git-grep)            ;; search in git project
+   ("C-c r" . consult-ripgrep)             ;; ripgrep (needs to be installed)
+   ("C-c m" . consult-imenu)))             ;; jump to symbol in buffer
+#+end_src
 
