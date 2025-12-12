@@ -1,3 +1,24 @@
+(require 'server)
+(unless (server-running-p)
+  (server-start))
+
+(require 'package)
+(setq package-user-dir (expand-file-name "elpa/" user-emacs-directory))
+
+(setq package-archives '(("gnu"       . "http://elpa.gnu.org/packages/")
+                         ("melpa"     . "https://melpa.org/packages/")
+                         ))
+
+(setq package-enable-at-startup nil)
+(package-initialize)
+
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+(require 'use-package)
+(setq use-package-always-ensure t)
+
 (setq inhibit-startup-message t)
 (tool-bar-mode -1)
 (menu-bar-mode -1)
@@ -13,5 +34,4 @@
 
 ;; (global-visual-line-mode t)
 (setq-default truncate-lines nil)
-;; (setq-default toggle-truncate-lines nil)
-;; (setq-default word-wrap t)
+(setq-default word-wrap t)
