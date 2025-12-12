@@ -1,0 +1,40 @@
+#+TITLE: Emacs configuration
+
+#+STARTUP: overview
+
+* Interface tweaks
+
+#+begin_src emacs-lisp
+  (setq inhibit-startup-message t)
+  (tool-bar-mode -1)
+  (menu-bar-mode -1)
+  (scroll-bar-mode -1)
+  (fset 'yes-or-no-p 'y-or-n-p)
+  (blink-cursor-mode 0)
+  (show-paren-mode)
+  (setq ring-bell-function 'ignore)
+#+end_src
+
+* Configurations
+
+** Buffer
+
+Auto revert buffers
+
+#+begin_src emacs-lisp
+  (global-auto-revert-mode 1)
+#+end_src
+
+Reload file with =<f5>=
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "<f5>") 'revert-buffer)
+#+end_src
+
+** Word and line wrap
+
+#+begin_src emacs-lisp
+  ;; (global-visual-line-mode t)
+  (setq-default truncate-lines nil)
+  (setq-default word-wrap t)
+#+end_src
