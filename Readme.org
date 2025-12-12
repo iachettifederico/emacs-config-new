@@ -425,10 +425,26 @@ We use `lsp-mode` for language server integration. Per-language configuration li
     (global-set-key (kbd "H-=") #'lsp-format-buffer))
 #+end_src
 
-** Ruby LSP
+* Ruby LSP
 
 Use `ruby-lsp`, installed via the Gemfile and automatically discovered via `direnv`.
 
 #+begin_src emacs-lisp
-  (add-hook 'ruby-ts-mode-hook #'lsp-deferred)
+;; Ensure lsp-mode is installed and available
+(use-package lsp-mode
+  :ensure t
+  :init
+  ;; Register ruby-lsp for ruby-ts-mode (not always auto-registered)
+  (defun my/register-ruby-lsp-client ()
+    (lsp-register-client
+     (make-lsp-client
+      :new-connection (lsp-stdio-connection
+                       (lambda ()
+                         lsp-ruby-lsp-server-command)) ; uses overridden value from .dir-locals.el
+      :activation-fn (lsp-activate-on "ruby") ; activates based on language id
+      :priority 1
+      :server-id 'ruby-lsp
+      :major-modes '(ruby-mode ruby-ts-mode))))
+  :config
+  (my/register-ruby-lsp-client))
 #+end_src

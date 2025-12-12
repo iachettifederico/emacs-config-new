@@ -13,7 +13,8 @@
  '(custom-safe-themes
    '("a2aea76e411311750871ade96aac4bc83457ced5feb1806d3905fb11b3f9c055"
      default))
- '(package-selected-packages nil))
+ '(package-selected-packages nil)
+ '(safe-local-variable-values '((lsp-enabled-clients ruby-lsp) (lsp-mode . t))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
