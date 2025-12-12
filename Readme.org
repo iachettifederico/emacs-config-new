@@ -142,6 +142,14 @@ Use =H-k= to define keybindings on the fly
   (global-set-key (kbd "H-k") 'global-set-key)
 #+end_src
 
+** Save current buffer
+
+Find files in the current project
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "H-s") 'save-buffer)
+#+end_src
+
 ** Finding files
 
 Find files in the current project
