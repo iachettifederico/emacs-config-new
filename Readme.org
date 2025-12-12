@@ -132,39 +132,9 @@ Don't allow lines to overflow the screen
   (setq-default word-wrap t)
 #+end_src
 
-* Global keybindings
+* Editing
 
-** Define keybindings on the fly
-
-Use =H-k= to define keybindings on the fly
-
-#+begin_src emacs-lisp
-  (global-set-key (kbd "H-k") 'global-set-key)
-#+end_src
-
-** Save current buffer
-
-Find files in the current project
-
-#+begin_src emacs-lisp
-  (global-set-key (kbd "H-s") 'save-buffer)
-#+end_src
-
-** Finding files
-
-Find files in the current project
-
-#+begin_src emacs-lisp
-  (global-set-key (kbd "H-f") 'project-find-file)
-#+end_src
-
-** Lines
-
-Delete the current line
-
-#+begin_src emacs-lisp
-  (global-set-key (kbd "H--") #'kill-whole-line)
-#+end_src
+** Line manipulation
 
 Move line or region up or down
 
@@ -252,9 +222,45 @@ Move line or region up or down
             (move-to-column col))))))
 #+end_src
 
+* Global keybindings
+
+** Define keybindings on the fly
+
+Use =H-k= to define keybindings on the fly
+
 #+begin_src emacs-lisp
-    (global-set-key (kbd "<H-S-up>") 'fiachetti/move-line-or-region-up)
-    (global-set-key (kbd "<H-S-down>") 'fiachetti/move-line-or-region-down)
+  (global-set-key (kbd "H-k") 'global-set-key)
+#+end_src
+
+** Save current buffer
+
+Find files in the current project
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "H-s") 'save-buffer)
+#+end_src
+
+** Finding files
+
+Find files in the current project
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "H-f") 'project-find-file)
+#+end_src
+
+** Lines
+
+Delete the current line
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "H--") #'kill-whole-line)
+#+end_src
+
+Move line or region up or down
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "<H-S-up>") 'fiachetti/move-line-or-region-up)
+  (global-set-key (kbd "<H-S-down>") 'fiachetti/move-line-or-region-down)
 #+end_src
 
 * Window movement
