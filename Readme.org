@@ -258,14 +258,36 @@ Marginalia adds annotations to minibuffer completion candidates, making them eas
     (marginalia-mode))
 #+end_src
 
-* Ruby
+
+* Tree-sitter support
+
+Enable tree-sitter major modes when available. This allows us to use `ruby-ts-mode`, `json-ts-mode`, etc., for better performance and parsing.
+
+#+begin_src emacs-lisp
+  (when (fboundp 'treesit-available-p)
+    (setq major-mode-remap-alist
+          '((ruby-mode . ruby-ts-mode)
+            (json-mode . json-ts-mode)
+            (js-mode . js-ts-mode)
+            (css-mode . css-ts-mode)
+            (html-mode . html-ts-mode)
+            (yaml-mode . yaml-ts-mode))))
+#+end_src
+
+Always prefer treesit when opening files
+
+#+begin_src emacs-lisp
+  (setq treesit-font-lock-level 4)
+#+end_src
+
+* Environment
 
 ** Direnv
 
 We load the current Ruby environment from `.envrc` files using `envrc-mode`, which integrates `direnv` into Emacs. This ensures Emacs sees the same Ruby version and gems as the terminal.
 
 #+begin_src emacs-lisp
-(use-package envrc
-  :init
-  (envrc-global-mode))
+  (use-package envrc
+    :init
+    (envrc-global-mode))
 #+end_src
