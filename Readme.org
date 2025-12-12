@@ -158,6 +158,105 @@ Find files in the current project
   (global-set-key (kbd "H-f") 'project-find-file)
 #+end_src
 
+** Lines
+
+Delete the current line
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "H--") #'kill-whole-line)
+#+end_src
+
+Move line or region up or down
+
+#+begin_src emacs-lisp
+  (defun fiachetti/move-line-or-region-up ()
+    "Move current line or active region up by one line."
+    (interactive)
+    (if (use-region-p)
+        ;; Move region
+        (let* ((start (save-excursion (goto-char (region-beginning)) (line-beginning-position)))
+               (end (save-excursion 
+                      (goto-char (region-end))
+                      ;; If at beginning of line, go to end of previous line
+                      (if (bolp)
+                          (max start (1- (point)))
+                        (line-end-position))))
+               (text (buffer-substring-no-properties start end))
+               (num-lines (length (split-string text "\n"))))
+          ;; Can't move up if already at first line
+          (when (> start (point-min))
+            ;; Delete region without adding to kill ring
+            (delete-region start (min (1+ end) (point-max)))
+            ;; Move up one line
+            (forward-line -1)
+            (beginning-of-line)
+            (let ((new-start (point)))
+              ;; Insert the text
+              (insert text "\n")
+              ;; Select the inserted region - mark at start, point at end
+              (goto-char (+ new-start (length text)))
+              (set-mark new-start)
+              (setq deactivate-mark nil))))
+      ;; Move single line
+      (let ((col (current-column)))
+        (when (> (line-number-at-pos) 1)
+          (let* ((start (line-beginning-position))
+                 (end (line-end-position))
+                 (text (buffer-substring-no-properties start end)))
+            (delete-region start (min (1+ end) (point-max)))
+            (forward-line -1)
+            (beginning-of-line)
+            (insert text "\n")
+            (forward-line -1)
+            (move-to-column col))))))
+
+  (defun fiachetti/move-line-or-region-down ()
+    "Move current line or active region down by one line."
+    (interactive)
+    (if (use-region-p)
+        ;; Move region
+        (let* ((start (save-excursion (goto-char (region-beginning)) (line-beginning-position)))
+               (end (save-excursion 
+                      (goto-char (region-end))
+                      ;; If at beginning of line, go to end of previous line
+                      (if (bolp)
+                          (max start (1- (point)))
+                        (line-end-position))))
+               (text (buffer-substring-no-properties start end))
+               (num-lines (length (split-string text "\n"))))
+          ;; Can't move down if already at last line
+          (when (save-excursion (goto-char end) (< end (point-max)))
+            ;; Delete region without adding to kill ring
+            (delete-region start (min (1+ end) (point-max)))
+            ;; Move down one line
+            (forward-line 1)
+            (beginning-of-line)
+            (let ((new-start (point)))
+              ;; Insert the text
+              (insert text "\n")
+              ;; Select the inserted region - mark at start, point at end
+              (goto-char (+ new-start (length text)))
+              (set-mark new-start)
+              (setq deactivate-mark nil))))
+      ;; Move single line
+      (let ((col (current-column)))
+        (when (save-excursion (end-of-line) (not (eobp)))
+          (let* ((start (line-beginning-position))
+                 (end (line-end-position))
+                 (text (buffer-substring-no-properties start end)))
+            (delete-region start (min (1+ end) (point-max)))
+            (forward-line 1)
+            (beginning-of-line)
+            (insert text "\n")
+            (forward-line -1)
+            (move-to-column col))))))
+#+end_src
+
+#+begin_src emacs-lisp
+    (global-set-key (kbd "<H-S-up>") 'fiachetti/move-line-or-region-up)
+    (global-set-key (kbd "<H-S-down>") 'fiachetti/move-line-or-region-down)
+#+end_src
+
 * Window movement
 
 ** Winner mode
