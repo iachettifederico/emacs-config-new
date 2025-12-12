@@ -56,6 +56,17 @@ Small interface tweaks to simplify the look and feel
 
 * Appearance
 
+** Font
+
+Set default font
+
+*** Jetbrains Mono
+
+#+begin_src emacs-lisp
+  (set-face-attribute 'default nil :family "JetBrains Mono" :height 150)
+  (add-to-list 'default-frame-alist '(font . "JetBrains Mono 15"))
+#+end_src
+
 ** Theme
 
 *** ir-black
