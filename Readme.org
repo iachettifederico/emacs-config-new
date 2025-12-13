@@ -100,18 +100,30 @@ Install doom themes and use =doom-ir-black=
     (doom-themes-org-config))
 #+end_src
 
-** Indentation Guides
+* Indentation
 
-Highlight the indentation level of programming files
+** Indentation guides (indent-bars)
 
 #+begin_src emacs-lisp
-  (use-package indent-guide
-    :ensure t
-    :hook ((prog-mode yaml-mode) . indent-guide-mode)
-    :custom
-    (indent-guide-char "│")
-    (indent-guide-delay 0.1)
-    (indent-guide-recursive t))
+  (use-package indent-bars
+    :hook (prog-mode . indent-bars-mode)
+    :init
+    ;; Depth-based shading: darker → slightly lighter
+    (setq indent-bars-color
+          '("#1e1e1e"
+            "#242424"
+            "#2a2a2a"
+            "#303030")
+
+          indent-bars-highlight-color "#3a3a3a"
+
+          ;; Visual weight
+          indent-bars-width-frac 0.12
+          indent-bars-pad-frac 0.10
+
+          ;; Keep it calm
+          indent-bars-zigzag nil
+          indent-bars-pattern "."))
 #+end_src
 
 * Configurations
