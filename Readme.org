@@ -1061,6 +1061,10 @@ JavaScript inflections: camelCase → UPPER_SNAKE_CASE → CamelCase → camelCa
                 (kbd "H-O") #'string-inflection-java-style-cycle))
 #+end_src
 
+* Edit as sudo
+
+#+begin_src emacs-lisp
+  (use-package sudo-edit :ensure t)
 #+end_src
 
 * Search and replace
