@@ -521,6 +521,225 @@ This allows opening paths like =foo/bar/baz.rb= without manually creating interm
   (global-set-key (kbd "H-)") 'bookmark-set)
 #+end_src
 
+* Try
+
+Try packages on the fly without the need to install them.
+
+Once emacs is restarted, the package goes away.
+
+#+begin_src emacs-lisp
+  (use-package try :ensure t)
+#+end_src
+
+* Which key
+
+Discover available keybindings.
+
+#+begin_src emacs-lisp
+  (require 'which-key)
+
+  (setq which-key-idle-delay 0.4
+        which-key-max-description-length 60         ;; allow longer lines
+        which-key-max-display-columns nil           ;; use as many as fit
+        which-key-allow-imprecise-window-fit t      ;; don't truncate early
+        which-key-sort-order 'which-key-key-order-alpha)
+
+  (which-key-mode)
+#+end_src
+
+* Completion UI
+
+** Vertico
+
+Vertico provides a vertical completion UI using Emacs' built-in completion system.
+It improves `completing-read` without introducing external frameworks.
+
+#+begin_src emacs-lisp
+  (use-package vertico
+    :init
+    (vertico-mode 1))
+#+end_src
+
+** Orderless
+
+Orderless improves the way Emacs matches completion candidates. Instead of matching strictly from the beginning, it lets you type space-separated components in any order.
+
+#+begin_src emacs-lisp
+  (use-package orderless
+    :init
+    (setq completion-styles '(orderless)
+          completion-category-defaults nil))
+#+end_src
+
+** Consult
+
+Consult provides a set of powerful search and navigation commands, enhancing the built-in Emacs UX.
+
+#+begin_src emacs-lisp
+  (use-package consult
+    :bind
+    (("C-s" . consult-line)                  ;; search in current buffer
+     ("C-x b" . consult-buffer)              ;; switch buffer
+     ("C-x 4 b" . consult-buffer-other-window)
+     ("M-y" . consult-yank-pop)              ;; show kill ring
+     ("C-c f" . consult-find)                ;; find files recursively
+     ("C-c r" . consult-ripgrep)             ;; ripgrep (needs to be installed)
+     ("C-c m" . consult-imenu)))             ;; jump to symbol in buffer
+#+end_src
+
+** Embark
+
+Embark provides a contextual action menu for minibuffer candidates.
+It complements Consult by allowing actions such as exporting results.
+
+#+begin_src emacs-lisp
+  (use-package embark
+    :bind (("C-." . embark-act)
+           ("C-;" . embark-dwim)
+           ("C-h B" . embark-bindings))
+    :init
+    ;; Use Embark for prefix help
+    (setq prefix-help-command #'embark-prefix-help-command))
+#+end_src
+
+** Embark + Consult integration
+
+This package provides the glue between Embark and Consult,
+enabling actions like exporting Consult search results.
+
+#+begin_src emacs-lisp
+  (use-package embark-consult
+    :after (embark consult))
+#+end_src
+
+** Marginalia
+
+Marginalia adds annotations to minibuffer completion candidates, making them easier to understand and choose.
+
+#+begin_src emacs-lisp
+  (use-package marginalia
+    :init
+    (marginalia-mode))
+#+end_src
+
+** Corfu
+
+Corfu adds a clean popup completion UI for Emacs' built-in `completion-at-point` system (CAPF).
+
+#+begin_src emacs-lisp
+  (use-package corfu
+    :custom
+    (corfu-auto t)
+    (corfu-auto-delay 0.2)
+    (corfu-auto-prefix 1)
+    (corfu-cycle t)
+    (corfu-quit-no-match 'separator)
+    :init
+    (global-corfu-mode))
+#+end_src
+
+*** Tab behaviour
+
+#+begin_src emacs-lisp
+  (setq tab-always-indent 'complete)
+#+end_src
+* Dired
+
+** Open with "a"
+
+This line enables =dired-find-alternate-file=, which allows you to open a file from dired using the =a= keybinding without being promped.
+
+#+begin_src emacs-lisp
+  (put 'dired-find-alternate-file 'disabled nil)
+#+end_src
+
+** Auto refresh dired, but be quiet about it
+
+#+begin_src emacs-lisp
+  (setq global-auto-revert-non-file-buffers t)
+  (setq auto-revert-verbose nil)
+  (add-hook 'dired-mode-hook #'auto-revert-mode)
+#+end_src
+
+** Jump to top and bottom
+
+#+begin_src emacs-lisp
+  (defun fiachetti/dired-top ()
+    "Jump to first real file in Dired."
+    (interactive)
+    (goto-char (point-min))
+    (dired-next-line 2))
+
+  (defun fiachetti/dired-bottom ()
+    "Jump to last file in Dired."
+    (interactive)
+    (goto-char (point-max))
+    (dired-next-line -1))
+
+  (with-eval-after-load 'dired
+    (define-key dired-mode-map [remap beginning-of-buffer] #'fiachetti/dired-top)
+    (define-key dired-mode-map [remap end-of-buffer] #'fiachetti/dired-bottom))
+#+end_src
+
+** File ordering
+
+#+begin_src emacs-lisp
+  (when (executable-find "ls")
+    (setq dired-listing-switches "-aBhl --group-directories-first"))
+#+end_src
+
+** Dired omit
+
+#+begin_src emacs-lisp
+  (setq-default dired-omit-files-p nil) ; Buffer-local variable
+
+  (setq dired-omit-files "^\\.?#\\|^\\.$\\|^\\.[^\\.]")
+  ;; (setq dired-omit-mode t) ; Turn on Omit mode.
+  (setq dired-omit-verbose nil) ; Turn off Omit mode messages.
+#+end_src
+
+** dired-x
+
+#+begin_src emacs-lisp
+  (require 'dired-x)
+#+end_src
+
+** Hide details
+
+#+begin_src emacs-lisp
+  (add-hook 'dired-mode-hook #'dired-hide-details-mode)
+#+end_src
+
+** diredfl
+
+#+begin_src emacs-lisp
+  (use-package diredfl
+    :hook (dired-mode . diredfl-mode)
+    :config
+    ;; Override default colors to match dark themes like ir-black
+    (set-face-attribute 'diredfl-dir-name nil :foreground "#66d9ef" :weight 'normal)
+    (set-face-attribute 'diredfl-file-name nil :foreground "#f8f8f2")
+    (set-face-attribute 'diredfl-symlink nil :foreground "#fd971f" :slant 'italic)
+    (set-face-attribute 'diredfl-exec-priv nil :foreground "#a6e22e")
+    (set-face-attribute 'diredfl-read-priv nil :foreground "#f92672")
+    (set-face-attribute 'diredfl-write-priv nil :foreground "#fd971f"))
+#+end_src
+
+** Fuzzy filtering
+
+#+begin_src emacs-lisp
+  (use-package dired-narrow
+    :bind (:map dired-mode-map
+                ("/" . dired-narrow)))
+#+end_src
+
+** Some eye candy
+
+#+begin_src emacs-lisp
+  (use-package nerd-icons-dired
+    :hook (dired-mode . nerd-icons-dired-mode))
+#+end_src
+
 * org-mode
 
 ** Blocks
@@ -648,206 +867,6 @@ Enable execution of source code blocks in Org files.
 
 #+begin_src emacs-lisp
   (use-package htmlize :ensure t)
-#+end_src
-
-* Dired
-
-** Open with "a"
-
-This line enables =dired-find-alternate-file=, which allows you to open a file from dired using the =a= keybinding without being promped.
-
-#+begin_src emacs-lisp
-  (put 'dired-find-alternate-file 'disabled nil)
-#+end_src
-
-** Auto refresh dired, but be quiet about it
-
-#+begin_src emacs-lisp
-  (setq global-auto-revert-non-file-buffers t)
-  (setq auto-revert-verbose nil)
-  (add-hook 'dired-mode-hook #'auto-revert-mode)
-#+end_src
-
-** Jump to top and bottom
-
-#+begin_src emacs-lisp
-  (defun fiachetti/dired-top ()
-    "Jump to first real file in Dired."
-    (interactive)
-    (goto-char (point-min))
-    (dired-next-line 2))
-
-  (defun fiachetti/dired-bottom ()
-    "Jump to last file in Dired."
-    (interactive)
-    (goto-char (point-max))
-    (dired-next-line -1))
-
-  (with-eval-after-load 'dired
-    (define-key dired-mode-map [remap beginning-of-buffer] #'fiachetti/dired-top)
-    (define-key dired-mode-map [remap end-of-buffer] #'fiachetti/dired-bottom))
-#+end_src
-
-** File ordering
-
-#+begin_src emacs-lisp
-  (when (executable-find "ls")
-    (setq dired-listing-switches "-aBhl --group-directories-first"))
-#+end_src
-
-** Dired omit
-
-#+begin_src emacs-lisp
-  (setq-default dired-omit-files-p nil) ; Buffer-local variable
-
-  (setq dired-omit-files "^\\.?#\\|^\\.$\\|^\\.[^\\.]")
-  ;; (setq dired-omit-mode t) ; Turn on Omit mode.
-  (setq dired-omit-verbose nil) ; Turn off Omit mode messages.
-#+end_src
-
-** dired-x
-
-#+begin_src emacs-lisp
-  (require 'dired-x)
-#+end_src
-
-** Hide details
-
-#+begin_src emacs-lisp
-  (add-hook 'dired-mode-hook #'dired-hide-details-mode)
-#+end_src
-
-** diredfl
-
-#+begin_src emacs-lisp
-  (use-package diredfl
-    :hook (dired-mode . diredfl-mode)
-    :config
-    ;; Override default colors to match dark themes like ir-black
-    (set-face-attribute 'diredfl-dir-name nil :foreground "#66d9ef" :weight 'normal)
-    (set-face-attribute 'diredfl-file-name nil :foreground "#f8f8f2")
-    (set-face-attribute 'diredfl-symlink nil :foreground "#fd971f" :slant 'italic)
-    (set-face-attribute 'diredfl-exec-priv nil :foreground "#a6e22e")
-    (set-face-attribute 'diredfl-read-priv nil :foreground "#f92672")
-    (set-face-attribute 'diredfl-write-priv nil :foreground "#fd971f"))
-#+end_src
-
-** Fuzzy filtering
-
-#+begin_src emacs-lisp
-  (use-package dired-narrow
-    :bind (:map dired-mode-map
-                ("/" . dired-narrow)))
-#+end_src
-
-** Some eye candy
-
-#+begin_src emacs-lisp
-  (use-package nerd-icons-dired
-    :hook (dired-mode . nerd-icons-dired-mode))
-#+end_src
-
-* Try
-
-Try packages on the fly without the need to install them.
-
-Once emacs is restarted, the package goes away.
-
-#+begin_src emacs-lisp
-  (use-package try :ensure t)
-#+end_src
-
-* Which key
-
-Discover available keybindings.
-
-#+begin_src emacs-lisp
-  (require 'which-key)
-
-  (setq which-key-idle-delay 0.4
-        which-key-max-description-length 60         ;; allow longer lines
-        which-key-max-display-columns nil           ;; use as many as fit
-        which-key-allow-imprecise-window-fit t      ;; don't truncate early
-        which-key-sort-order 'which-key-key-order-alpha)
-
-  (which-key-mode)
-#+end_src
-
-* Completion UI
-
-** Vertico
-
-Vertico provides a vertical completion UI using Emacs' built-in completion system.
-It improves `completing-read` without introducing external frameworks.
-
-#+begin_src emacs-lisp
-  (use-package vertico
-    :init
-    (vertico-mode 1))
-#+end_src
-
-** Orderless
-
-Orderless improves the way Emacs matches completion candidates. Instead of matching strictly from the beginning, it lets you type space-separated components in any order.
-
-#+begin_src emacs-lisp
-  (use-package orderless
-    :init
-    (setq completion-styles '(orderless)
-          completion-category-defaults nil))
-#+end_src
-
-** Consult
-
-Consult provides a set of powerful search and navigation commands, enhancing the built-in Emacs UX.
-
-#+begin_src emacs-lisp
-  (use-package consult
-    :bind
-    (("C-s" . consult-line)                  ;; search in current buffer
-     ("C-x b" . consult-buffer)              ;; switch buffer
-     ("C-x 4 b" . consult-buffer-other-window)
-     ("M-y" . consult-yank-pop)              ;; show kill ring
-     ("C-c f" . consult-find)                ;; find files recursively
-     ;; ("C-c g" . consult-git-grep)            ;; search in git project
-     ("C-c r" . consult-ripgrep)             ;; ripgrep (needs to be installed)
-     ("C-c m" . consult-imenu)))             ;; jump to symbol in buffer
-#+end_src
-
-** Marginalia
-
-Marginalia adds annotations to minibuffer completion candidates, making them easier to understand and choose.
-
-#+begin_src emacs-lisp
-  (use-package marginalia
-    :init
-    (marginalia-mode))
-#+end_src
-
-** Corfu
-
-Corfu adds a clean popup completion UI for Emacs' built-in `completion-at-point` system (CAPF).
-It works well with `orderless` and `lsp-mode`.
-
-#+begin_src emacs-lisp
-  (use-package corfu
-    :ensure t
-    :custom
-    (corfu-auto t)                     ;; Auto-popup completion
-    (corfu-auto-delay 0.2)            ;; Slight delay before popup
-    (corfu-auto-prefix 1)             ;; Start showing after 1 char
-    (corfu-cycle t)                   ;; Wrap around when navigating
-    (corfu-quit-no-match 'separator)  ;; Exit if no matches and you type space
-    :init
-    (global-corfu-mode))
-#+end_src
-
-*** Tab behaviour
-
-=tab= will invoke completion at point unless it can indent
-
-#+begin_src emacs-lisp
-  (setq tab-always-indent 'complete)
 #+end_src
 
 * Magit
