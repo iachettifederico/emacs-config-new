@@ -158,7 +158,9 @@ Add support for dead characters
 
 ** Line manipulation
 
-Move line or region up or down
+*** Move line or region up or down
+
+Move line or region up
 
 #+begin_src emacs-lisp
   (defun fiachetti/move-line-or-region-up ()
@@ -201,7 +203,11 @@ Move line or region up or down
             (insert text "\n")
             (forward-line -1)
             (move-to-column col))))))
+#+end_src
 
+Move line or region down
+
+#+begin_src emacs-lisp
   (defun fiachetti/move-line-or-region-down ()
     "Move current line or active region down by one line."
     (interactive)
@@ -244,6 +250,20 @@ Move line or region up or down
             (move-to-column col))))))
 #+end_src
 
+Duplicate line
+
+#+begin_src emacs-lisp
+    ;;;###autoload
+  (defun fiachetti/duplicate-line()
+    (interactive)
+    (move-beginning-of-line 1)
+    (kill-line)
+    (yank)
+    (open-line 1)
+    (next-line 1)
+    (yank))
+#+end_src
+
 * Global keybindings
 
 ** Define keybindings on the fly
@@ -283,6 +303,26 @@ Move line or region up or down
 #+begin_src emacs-lisp
   (global-set-key (kbd "<H-S-up>") 'fiachetti/move-line-or-region-up)
   (global-set-key (kbd "<H-S-down>") 'fiachetti/move-line-or-region-down)
+#+end_src
+
+Duplicate line
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "H-d") 'fiachetti/duplicate-line)
+#+end_src
+
+Join lines
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "H-j") (lambda ()
+                                (interactive)
+                                (join-line -1)))
+#+end_src
+
+Sort lines
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "H-l") 'sort-lines)
 #+end_src
 
 * File commands
