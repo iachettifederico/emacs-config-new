@@ -954,6 +954,115 @@ This setup preserves existing muscle memory while keeping the configuration clea
            ("H-<mouse-1>" . mc/add-cursor-on-click)))
 #+end_src
 
+* String inflections
+
+Change inflections for the current symbol
+
+#+begin_src emacs-lisp
+  (use-package string-inflection
+    :bind (("H-o s" . string-inflection-underscore)        ;; snake_case
+           ("H-o c" . string-inflection-camelcase)         ;; CamelCase
+           ("H-o l" . string-inflection-lower-camelcase)   ;; lowerCamelCase
+           ("H-o k" . string-inflection-kebab-case)        ;; kebab-case
+           ("H-o u" . string-inflection-upcase)))           ;; UPPER_SNAKE_CASE
+#+end_src
+
+** Language-specific inflection cycles
+
+In addition to explicit inflections (`H-o s`, `H-o c`, etc.), some
+languages benefit from a small, predictable *cycle* that matches their
+idiomatic naming conventions.
+
+Cycling is bound to `H-O` (capital O) and is enabled *only* for languages
+where it makes sense.
+
+*** Ruby
+
+Ruby inflections: snake_case → UPPER_SNAKE_CASE → CamelCase → snake_case
+
+#+begin_src emacs-lisp
+  (with-eval-after-load 'ruby-ts-mode
+    (define-key ruby-ts-mode-map
+                (kbd "H-O") #'string-inflection-ruby-style-cycle))
+#+end_src
+
+** Ruby path ↔ constant helpers
+
+These helpers convert between Ruby filesystem-style paths and constant
+namespaces.
+
+Examples:
+- abc_def/ghi_jkl  ↔  AbcDef::GhiJkl
+
+They operate on the active region if present, otherwise on the symbol
+at point.
+
+#+begin_src emacs-lisp
+  (defun fiachetti/ruby--snake-to-camel (s)
+    "Convert snake_case string S to CamelCase."
+    (mapconcat #'capitalize (split-string s "_") ""))
+
+  (defun fiachetti/ruby--camel-to-snake (s)
+    "Convert CamelCase string S to snake_case."
+    (let ((case-fold-search nil))
+      (downcase
+       (replace-regexp-in-string
+        "\\([a-z0-9]\\)\\([A-Z]\\)" "\\1_\\2" s))))
+
+  (defun fiachetti/ruby-path-to-constant ()
+    "Convert a Ruby-style path to a Ruby constant namespace.
+
+  Example:
+    abc_def/ghi_jkl → AbcDef::GhiJkl"
+    (interactive)
+    (let* ((bounds (if (use-region-p)
+                       (cons (region-beginning) (region-end))
+                     (bounds-of-thing-at-point 'symbol)))
+           (text (and bounds
+                      (buffer-substring-no-properties
+                       (car bounds) (cdr bounds)))))
+      (when text
+        (let* ((segments (split-string text "/"))
+               (camelized (mapcar #'fiachetti/ruby--snake-to-camel segments))
+               (result (string-join camelized "::")))
+          (delete-region (car bounds) (cdr bounds))
+          (insert result)))))
+
+  (defun fiachetti/ruby-constant-to-path ()
+    "Convert a Ruby constant namespace to a Ruby-style path.
+
+  Example:
+    AbcDef::GhiJkl → abc_def/ghi_jkl"
+    (interactive)
+    (let* ((bounds (if (use-region-p)
+                       (cons (region-beginning) (region-end))
+                     (bounds-of-thing-at-point 'symbol)))
+           (text (and bounds
+                      (buffer-substring-no-properties
+                       (car bounds) (cdr bounds)))))
+      (when text
+        (let* ((segments (split-string text "::"))
+               (underscored (mapcar #'fiachetti/ruby--camel-to-snake segments))
+               (result (string-join underscored "/")))
+          (delete-region (car bounds) (cdr bounds))
+          (insert result)))))
+
+  (with-eval-after-load 'ruby-ts-mode
+    (define-key ruby-ts-mode-map (kbd "H-o n") #'fiachetti/ruby-path-to-constant)
+    (define-key ruby-ts-mode-map (kbd "H-o p") #'fiachetti/ruby-constant-to-path))
+#+end_src
+** JavaScript
+
+JavaScript inflections: camelCase → UPPER_SNAKE_CASE → CamelCase → camelCase
+
+#+begin_src emacs-lisp
+  (with-eval-after-load 'js-ts-mode
+    (define-key js-ts-mode-map
+                (kbd "H-O") #'string-inflection-java-style-cycle))
+#+end_src
+
+#+end_src
+
 * Search and replace
 
 This section defines a search-and-replace workflow built on top of
