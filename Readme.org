@@ -134,6 +134,22 @@ Don't allow lines to overflow the screen
 
 * Editing
 
+** Delete selection
+
+When a region (selection) is active and you start typing, this config will replace that selection with the inserted text
+
+#+begin_src emacs-lisp
+  (delete-selection-mode 1)
+#+end_src
+
+** Dead characters
+
+Add support for dead characters
+
+#+begin_src emacs-lisp
+  (require 'iso-transl)
+#+end_src
+
 ** Line manipulation
 
 Move line or region up or down
