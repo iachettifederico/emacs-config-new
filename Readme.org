@@ -922,6 +922,20 @@ Some extra variables I like
    '(git-commit-summary-max-length 1000))
 #+end_src
 
+* Expand region
+
+=expand-region= allows incremental, semantic expansion of the active
+region (=symbol → expression → block → function=).
+
+#+begin_src emacs-lisp
+(use-package expand-region
+  :after treesit
+  :bind (("H-e" . er/expand-region)
+         ("H-E" . er/contract-region))
+  :custom
+  (expand-region-fast-keys-enabled nil))
+#+end_src
+
 * Search and replace
 
 This section defines a search-and-replace workflow built on top of
