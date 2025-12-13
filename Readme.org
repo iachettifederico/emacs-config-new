@@ -922,6 +922,72 @@ Some extra variables I like
    '(git-commit-summary-max-length 1000))
 #+end_src
 
+* Search and replace
+
+This section defines a search-and-replace workflow built on top of
+`consult`, `embark`, and `wgrep`.
+
+The idea is:
+- use `consult-ripgrep` for fast, interactive searching
+- use Embark to *export* the current result set
+- use `wgrep` to edit matches across multiple files
+
+** Consult ripgrep
+
+#+begin_src emacs-lisp
+(defun fiachetti/consult-ripgrep-project ()
+  "Search the current project with ripgrep, seeded with symbol at point."
+  (interactive)
+  (consult-ripgrep
+   (consult--project-root)
+   (thing-at-point 'symbol t)))
+
+(defun fiachetti/consult-ripgrep-dir ()
+  "Search the current directory with ripgrep, seeded with symbol at point."
+  (interactive)
+  (consult-ripgrep
+   default-directory
+   (thing-at-point 'symbol t)))
+
+(with-eval-after-load 'consult
+  (keymap-global-set "H-g" #'fiachetti/consult-ripgrep-project)
+  (keymap-global-set "H-G" #'fiachetti/consult-ripgrep-dir))
+#+end_src
+
+** Exporting results with Embark
+
+While a `consult-ripgrep` minibuffer is active, press:
+
+- `C-.` (`embark-act`)
+- then choose **Export**
+
+This turns the current result set into a `grep-mode` buffer containing
+exactly the same matches shown by Consult.
+
+This functionality is provided by `embark-consult`.
+
+#+begin_src emacs-lisp
+(use-package embark-consult
+  :after (embark consult))
+#+end_src
+
+** Editing matches with wgrep
+
+Once results are exported to a `grep-mode` buffer, `wgrep` allows
+editing matches directly and applying the changes back to the files.
+
+- `C-c C-e` enters `wgrep` mode
+- Saving the buffer applies the changes
+
+#+begin_src emacs-lisp
+(use-package wgrep
+  :after grep
+  :bind (:map grep-mode-map
+              ("C-c C-e" . wgrep-change-to-wgrep-mode))
+  :config
+  (setq wgrep-auto-save-buffer t))
+#+end_src
+
 * Tree-sitter support
 
 Enable tree-sitter major modes when available. This allows us to use `ruby-ts-mode`, `json-ts-mode`, etc., for better performance and parsing.
