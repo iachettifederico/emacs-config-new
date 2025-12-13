@@ -413,11 +413,17 @@ Once emacs is restarted, the package goes away.
 Discover available keybindings.
 
 #+begin_src emacs-lisp
-  (which-key-setup-side-window-bottom)
-
   (require 'which-key)
+
+  (setq which-key-idle-delay 0.4
+        which-key-max-description-length 60         ;; allow longer lines
+        which-key-max-display-columns nil           ;; use as many as fit
+        which-key-allow-imprecise-window-fit t      ;; don't truncate early
+        which-key-sort-order 'which-key-key-order-alpha)
+
   (which-key-mode)
 #+end_src
+
 
 * Completion UI
 
