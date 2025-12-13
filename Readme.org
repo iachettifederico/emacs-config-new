@@ -371,6 +371,32 @@ Marginalia adds annotations to minibuffer completion candidates, making them eas
     (marginalia-mode))
 #+end_src
 
+** Corfu
+
+Corfu adds a clean popup completion UI for Emacs' built-in `completion-at-point` system (CAPF).
+It works well with `orderless` and `lsp-mode`.
+
+#+begin_src emacs-lisp
+  (use-package corfu
+    :ensure t
+    :custom
+    (corfu-auto t)                     ;; Auto-popup completion
+    (corfu-auto-delay 0.2)            ;; Slight delay before popup
+    (corfu-auto-prefix 1)             ;; Start showing after 1 char
+    (corfu-cycle t)                   ;; Wrap around when navigating
+    (corfu-quit-no-match 'separator)  ;; Exit if no matches and you type space
+    :init
+    (global-corfu-mode))
+#+end_src
+
+*** Tab behaviour
+
+=tab= will invoke completion at point unless it can indent
+
+#+begin_src emacs-lisp
+  (setq tab-always-indent 'complete)
+#+end_src
+
 * Magit
 
 Use magit for git integration
