@@ -414,6 +414,37 @@ Navigate window configuration history
   (setq split-width-threshold 0)
 #+end_src
 
+* Buffers
+
+** Switch to scratch buffer
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-x C-w")
+                  (lambda ()
+                    (interactive)
+                    (switch-to-buffer "*scratch*")))
+#+end_src
+
+* Directories
+
+When visiting a file whose parent directory does not exist, automatically create the directory first.
+
+This allows opening paths like =foo/bar/baz.rb= without manually creating intermediate directories.
+
+#+begin_src emacs-lisp
+  (defun fiachetti/make-parent-directory ()
+    "Create parent directory for the current file if it does not exist.
+
+  This runs from `find-file-not-found-functions` and is safe to call
+  only when `buffer-file-name` is non-nil."
+    (let ((parent (file-name-directory (or buffer-file-name ""))))
+      (when (and parent (not (file-exists-p parent)))
+        (make-directory parent t))))
+
+  (add-hook 'find-file-not-found-functions
+            #'fiachetti/make-parent-directory)
+#+end_src
+
 * Font size customizations
 
 ** Increase and decrease font size
@@ -448,6 +479,135 @@ Navigate window configuration history
 #+begin_src emacs-lisp
   (global-set-key (kbd "H-0") 'bookmark-jump)
   (global-set-key (kbd "H-)") 'bookmark-set)
+#+end_src
+
+* org-mode
+
+** Blocks
+
+*** Custom block templates
+
+#+begin_src emacs-lisp
+  (dolist (template
+           '(("-" . "src")
+             ("q" . "quote")
+             ("v" . "verse")
+             ("r" . "src ruby")
+             ("l" . "src emacs-lisp")
+             ("s" . "src sh")
+             ("C" . "comment")
+             ("e" . "example")
+             ("h" . "export html")
+             ("a" . "export ascii")
+             ("c" . "center")
+             ("E" . "export")))
+    (setf (alist-get (car template) org-structure-template-alist nil nil #'string=)
+          (cdr template)))
+#+end_src
+
+** Clocking
+
+Configure how time tracking works with org-clock.
+
+#+begin_src emacs-lisp
+  ;; Store clocks in a named drawer instead of cluttering entries
+  (setq org-clock-into-drawer "CLOCKING")
+
+  ;; Format durations as "1:30" instead of decimal hours
+  (setq org-duration-format 'h:mm)
+
+  ;; Optional: persist clocks across Emacs restarts
+  ;; (setq org-clock-persist 'history)
+  ;; (org-clock-persistence-insinuate)
+#+end_src
+
+** Eye candy
+
+#+begin_src emacs-lisp
+  (use-package org-modern
+    :ensure t
+    :hook (org-mode . org-modern-mode))
+#+end_src
+
+** Org Babel
+
+Enable execution of source code blocks in Org files.
+
+#+begin_src emacs-lisp
+  (use-package org
+    :config
+    ;; Syntax highlighting in code blocks
+    (setq org-src-fontify-natively t)
+
+    ;; Enable supported languages for code blocks
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((ruby . t)
+       (emacs-lisp . t)
+       (org . t))))
+#+end_src
+
+** Pandoc config
+
+*** Export dispatch options for Pandoc
+
+#+begin_src emacs-lisp
+  (use-package ox-pandoc
+    :ensure t
+    :after org
+    :config
+    (setq org-pandoc-menu-entry
+          '((?h "to html5" org-pandoc-export-to-html5)
+            (?H "to html5 and open" org-pandoc-export-to-html5-and-open)
+            (?p "to html5-pdf" org-pandoc-export-to-html5-pdf)
+            (?P "to html5-pdf and open" org-pandoc-export-to-html5-pdf-and-open)
+            (?e "to epub3" org-pandoc-export-to-epub3)
+            (?E "to epub3 and open" org-pandoc-export-to-epub3-and-open)
+            (?m "to markdown" org-pandoc-export-to-markdown)
+            (?M "to markdown and open" org-pandoc-export-to-markdown-and-open)
+            (?o "to odt" org-pandoc-export-to-odt)
+            (?O "to odt and open" org-pandoc-export-to-odt-and-open)
+            (?r "as revealjs" org-pandoc-export-as-revealjs)
+            (?R "to revealjs and open" org-pandoc-export-to-revealjs-and-open)
+            (?i "to infojs" org-pandoc-export-to-infojs)
+            (?I "to infojs and open" org-pandoc-export-to-infojs-and-open))))
+#+end_src
+
+** Populate org-mode shots
+
+#+begin_src emacs-lisp
+  ;;;###autoload
+  (defun fiachetti/populate-org-shots (ARG)
+    "Populate {{{shot(n)}}}* macros on current buffer"
+    (interactive "p")
+    (save-excursion
+      (beginning-of-buffer)
+      (kmacro-set-counter 1)
+      (while (search-forward "{{{shot(" nil t)
+        (kmacro-insert-counter ARG)
+        (let ((start (point)))
+          (search-forward-regexp "\\(,\.+)\\|)}}}\\)")
+          (let ((end (match-beginning 0)))
+            (delete-region start end)
+            )
+          ))))
+#+end_src
+
+*** Insert shot and populate
+
+#+begin_src emacs-lisp
+  ;;;###autoload
+  (defun fiachetti/insert-and-populate-org-shots ()
+    "Insert {{{shot()}}} and repopulate shots on buffer"
+    (interactive)
+    (insert "{{{shot()}}}")
+    (fiachetti/populate-org-shots t))
+#+end_src
+
+** Org Export Support
+
+#+begin_src emacs-lisp
+  (use-package htmlize :ensure t)
 #+end_src
 
 * Dired
