@@ -440,7 +440,6 @@ Discover available keybindings.
   (which-key-mode)
 #+end_src
 
-
 * Completion UI
 
 ** Vertico
@@ -660,3 +659,18 @@ This gives us diagnostics (including RuboCop), formatting, hover docs, jump-to-d
     (add-hook 'ruby-mode #'lsp-deferred)
     (add-hook 'ruby-ts-mode #'lsp-deferred))
 #+end_src
+
+* Yaml
+
+#+begin_src emacs-lisp
+  (use-package yaml-ts-mode
+    :mode ("\\.ya?ml\\'" . yaml-ts-mode))
+#+end_src
+
+* Docker
+
+#+begin_src emacs-lisp
+  (use-package dockerfile-ts-mode
+    :mode ("Dockerfile\\'" . dockerfile-ts-mode))
+#+end_src
+
