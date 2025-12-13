@@ -263,6 +263,105 @@ Move line or region up or down
   (global-set-key (kbd "<H-S-down>") 'fiachetti/move-line-or-region-down)
 #+end_src
 
+* File commands
+
+Useful utilities for working with the current file.
+
+** Delete the current file and buffer
+
+#+begin_src emacs-lisp
+  (defun fiachetti/delete-file-and-buffer ()
+    "Delete the file visited by the current buffer, without using Git."
+    (interactive)
+    (let ((filename (buffer-file-name)))
+      (when (and filename
+                 (file-exists-p filename)
+                 (yes-or-no-p (format "Really delete '%s'?" filename)))
+        (delete-file filename)
+        (kill-this-buffer)
+        (message "Deleted %s" filename))))
+#+end_src
+
+Use =H-D d= keybinding
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "H-D d") #'fiachetti/delete-file-and-buffer)
+#+end_src
+
+** Rename current file
+
+#+begin_src emacs-lisp
+  (defun fiachetti/rename-current-file ()
+    "Rename current file and buffer."
+    (interactive)
+    (let* ((old-name (buffer-file-name))
+           (new-name (read-file-name "Rename to: " old-name)))
+      (when (vc-backend old-name)
+        (vc-rename-file old-name new-name))
+      (rename-file old-name new-name 1)
+      (set-visited-file-name new-name t t)
+      (message "Renamed to %s" new-name)))
+#+end_src
+
+Use =H-D r= keybinding
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "H-D r") #'fiachetti/rename-current-file)
+#+end_src
+
+** Copy current path to clipboard
+
+#+begin_src emacs-lisp
+  (defun fiachetti/copy-file-path ()
+    "Copy the current file path to the clipboard."
+    (interactive)
+    (let ((path (or (buffer-file-name) default-directory)))
+      (kill-new path)
+      (message "Copied: %s" path)))
+#+end_src
+
+Use =H-D p= keybinding
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "H-D p") #'fiachetti/copy-file-path)
+#+end_src
+
+** Copy current file name to clipboard
+
+#+begin_src emacs-lisp
+  (defun fiachetti/copy-file-name ()
+    "Copy the name of the current file (without the path) to the clipboard."
+    (interactive)
+    (let ((name (file-name-nondirectory (or (buffer-file-name) ""))))
+      (kill-new name)
+      (message "Copied: %s" name)))
+#+end_src
+
+Use =H-D n= keybinding
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "H-D n") #'fiachetti/copy-file-name)
+#+end_src
+
+** Change mode permissions (=chmod=) to the current file
+
+#+begin_src emacs-lisp
+  (defun fiachetti/change-file-mode ()
+    "Change the permissions (mode) of the current file."
+    (interactive)
+    (when-let ((file (buffer-file-name)))
+      (let* ((current-mode (file-modes-symbolic file))
+             (new-mode (read-string (format "chmod (was %s): " current-mode))))
+        (set-file-modes file (file-modes-symbolic-to-number new-mode))
+        (message "Changed mode to %s for %s" new-mode file))))
+#+end_src
+
+Use =H-D m= keybinding
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "H-D m") #'fiachetti/change-file-mode)
+#+end_src
+
 * Window movement
 
 ** Winner mode
