@@ -560,6 +560,17 @@ It improves `completing-read` without introducing external frameworks.
     (vertico-mode 1))
 #+end_src
 
+*** Vertico directory support
+#+begin_src emacs-lisp
+  (use-package vertico-directory
+    :after vertico
+    :ensure nil ;; ships with vertico
+    :bind (:map vertico-map
+                ("/"     . vertico-directory-enter)
+                ("DEL" . vertico-directory-delete-char)
+                ("M-DEL" . vertico-directory-delete-word)))
+#+end_src
+
 ** Orderless
 
 Orderless improves the way Emacs matches completion candidates. Instead of matching strictly from the beginning, it lets you type space-separated components in any order.
