@@ -4,3 +4,5 @@ Readme.el
 /auto-save-list/
 /projects
 /.lsp-session-v1
+/transient/
+/places
