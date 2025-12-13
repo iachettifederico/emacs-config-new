@@ -13,6 +13,9 @@
  '(custom-safe-themes
    '("a2aea76e411311750871ade96aac4bc83457ced5feb1806d3905fb11b3f9c055"
      default))
+ '(git-commit-fill-column 1000)
+ '(git-commit-finish-query-functions nil)
+ '(git-commit-summary-max-length 1000)
  '(package-selected-packages nil)
  '(safe-local-variable-values '((lsp-enabled-clients ruby-lsp) (lsp-mode . t))))
 (custom-set-faces
