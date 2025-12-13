@@ -623,15 +623,6 @@ lives in their own sections.
     (lsp-completion-provider :none))
 #+end_src
 
-** Global keybindings
-
-Use =H-== to format the entire buffer
-
-#+begin_src emacs-lisp
-  (with-eval-after-load 'lsp-mode
-    (global-set-key (kbd "H-=") #'lsp-format-buffer))
-#+end_src
-
 * Ruby LSP
 
 Configure `ruby-lsp` as the language server for Ruby files.
@@ -658,6 +649,59 @@ This gives us diagnostics (including RuboCop), formatting, hover docs, jump-to-d
   (with-eval-after-load 'lsp-mode
     (add-hook 'ruby-mode #'lsp-deferred)
     (add-hook 'ruby-ts-mode #'lsp-deferred))
+#+end_src
+
+* Formatting buffers
+
+Select the best way to format the current buffer
+
+#+begin_src emacs-lisp
+  (defun fiachetti/format-buffer ()
+    "Format the current buffer using the best available method."
+    (interactive)
+    (cond
+     ;; Use LSP formatter if available
+     ((and (boundp 'lsp-mode) lsp-mode
+           (fboundp 'lsp-format-buffer))
+      (lsp-format-buffer))
+
+     ;; Org-mode custom formatting
+     ((derived-mode-p 'org-mode)
+      (org-align-all-tags)
+      ;; remove `org-align-all-tables` since it's unavailable
+      (org-fill-buffer)
+      (message "Formatted Org buffer."))
+
+     ;; Fallback: smart indenting
+     (t
+      (fiachetti/reindent-buffer)
+      (message "Reindented buffer."))))
+#+end_src
+
+Use =H-== to format the entire buffer
+
+#+begin_src emacs-lisp
+ (global-set-key (kbd "H-=") #'fiachetti/format-buffer)
+#+end_src
+
+Use =H-+= to reindent buffers
+
+#+begin_src emacs-lisp
+ (global-set-key (kbd "H-=") #'fiachetti/reindent-buffer)
+#+end_src
+
+** Reindent buffer
+
+#+begin_src emacs-lisp
+  (defun fiachetti/reindent-buffer ()
+    "Clean up and indent the current buffer.
+
+  Removes trailing whitespace, indents all lines, and converts tabs to spaces."
+    (interactive)
+    (save-excursion
+      (delete-trailing-whitespace)
+      (indent-region (point-min) (point-max))
+      (untabify (point-min) (point-max))))
 #+end_src
 
 * Yaml
