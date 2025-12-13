@@ -145,7 +145,7 @@ Move line or region up or down
     (if (use-region-p)
         ;; Move region
         (let* ((start (save-excursion (goto-char (region-beginning)) (line-beginning-position)))
-               (end (save-excursion 
+               (end (save-excursion
                       (goto-char (region-end))
                       ;; If at beginning of line, go to end of previous line
                       (if (bolp)
@@ -186,7 +186,7 @@ Move line or region up or down
     (if (use-region-p)
         ;; Move region
         (let* ((start (save-excursion (goto-char (region-beginning)) (line-beginning-position)))
-               (end (save-excursion 
+               (end (save-excursion
                       (goto-char (region-end))
                       ;; If at beginning of line, go to end of previous line
                       (if (bolp)
@@ -483,20 +483,29 @@ We load the current Ruby environment from `.envrc` files using `envrc-mode`, whi
     (envrc-global-mode))
 #+end_src
 
-* LSP support
+* LSP Support
 
-We use `lsp-mode` for language server integration. Per-language configuration lives in dedicated sections below.
+Use `lsp-mode` for Language Server Protocol support. This package is responsible
+for communicating with language servers — it sends file content, cursor positions,
+and receives things like diagnostics, completions, and hover info.
+
+We only configure the base layer here. Language-specific setup (like Ruby, JS, etc.)
+lives in their own sections.
 
 #+begin_src emacs-lisp
   (use-package lsp-mode
+    :ensure t
     :commands (lsp lsp-deferred)
+    :hook ((ruby-mode . lsp-deferred)
+           (ruby-ts-mode . lsp-deferred))
     :custom
     (lsp-enable-symbol-highlighting t)
-    (lsp-headerline-breadcrumb-enable nil)
-    (lsp-completion-provider :none)) ;; we'll add UI/completion separately
+    (lsp-completion-provider :none))
 #+end_src
 
-** LSP keybindings
+** Global keybindings
+
+Use =H-== to format the entire buffer
 
 #+begin_src emacs-lisp
   (with-eval-after-load 'lsp-mode
@@ -505,24 +514,28 @@ We use `lsp-mode` for language server integration. Per-language configuration li
 
 * Ruby LSP
 
-Use `ruby-lsp`, installed via the Gemfile and automatically discovered via `direnv`.
+Configure `ruby-lsp` as the language server for Ruby files.
+
+We use the `ruby-lsp` gem from the project's `Gemfile`, executed via `bundle exec`.
+This gives us diagnostics (including RuboCop), formatting, hover docs, jump-to-def, and more.
 
 #+begin_src emacs-lisp
-;; Ensure lsp-mode is installed and available
-(use-package lsp-mode
-  :ensure t
-  :init
-  ;; Register ruby-lsp for ruby-ts-mode (not always auto-registered)
-  (defun my/register-ruby-lsp-client ()
+  (use-package lsp-mode
+    :ensure t
+    :config
     (lsp-register-client
      (make-lsp-client
-      :new-connection (lsp-stdio-connection
-                       (lambda ()
-                         lsp-ruby-lsp-server-command)) ; uses overridden value from .dir-locals.el
-      :activation-fn (lsp-activate-on "ruby") ; activates based on language id
+      :new-connection (lsp-stdio-connection '("bundle" "exec" "ruby-lsp"))
+      :activation-fn (lsp-activate-on "ruby")
       :priority 1
       :server-id 'ruby-lsp
       :major-modes '(ruby-mode ruby-ts-mode))))
-  :config
-  (my/register-ruby-lsp-client))
+#+end_src
+
+** Automatically start LSP in Ruby files
+
+#+begin_src emacs-lisp
+  (with-eval-after-load 'lsp-mode
+    (add-hook 'ruby-mode #'lsp-deferred)
+    (add-hook 'ruby-ts-mode #'lsp-deferred))
 #+end_src
