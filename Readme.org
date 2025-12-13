@@ -104,26 +104,44 @@ Install doom themes and use =doom-ir-black=
 
 ** Indentation guides (indent-bars)
 
+Add increasingly annoying indentation lines
+
 #+begin_src emacs-lisp
   (use-package indent-bars
     :hook (prog-mode . indent-bars-mode)
     :init
-    ;; Depth-based shading: darker → slightly lighter
-    (setq indent-bars-color
-          '("#1e1e1e"
-            "#242424"
-            "#2a2a2a"
-            "#303030")
+    ;; Reset after theme loads and when new frames appear (daemon/emacsclient friendly).
+    (defun fiachetti/indent-bars-safe-reset (&rest _)
+      (when (featurep 'indent-bars)
+        (ignore-errors (indent-bars-reset))))
+    (add-hook 'after-load-theme-hook #'fiachetti/indent-bars-safe-reset)
+    (add-hook 'after-make-frame-functions (lambda (_f) (fiachetti/indent-bars-safe-reset)))
 
-          indent-bars-highlight-color "#3a3a3a"
+    :custom
+    ;; If your Emacs build is sketchy with :stipple, prefer characters.
+    ;; (Recommended by the package docs as a fallback.) :contentReference[oaicite:6]{index=6}
+    (indent-bars-prefer-character t)
+    (indent-bars-no-stipple-char ?│)
 
-          ;; Visual weight
-          indent-bars-width-frac 0.12
-          indent-bars-pad-frac 0.10
+    ;; Main color: MUST be (COLOR-OR-FACE :blend N), not a plist. :contentReference[oaicite:7]{index=7}
+    ;; Start from “keyword blue vibe”, but keep blend 0 while stabilizing.
+    (indent-bars-color '("#3b86d1" :blend 0.0))
 
-          ;; Keep it calm
-          indent-bars-zigzag nil
-          indent-bars-pattern "."))
+    ;; Depth-based “annoyance ramp”
+    ;; 1–3 acceptable blues, 4–5 louder, 6–10 obnoxious.
+    ;; Use a LIST here for maximum compatibility across versions.
+    (indent-bars-color-by-depth
+     '(:palette
+       ("#223244" "#2f6aa3" "#3b86d1"  ; 1–3 acceptable (blue)
+        "#4aa3ff" "#00b7ff"            ; 4–5 annoying (bright blue/cyan)
+        "#00f0ff" "#7c4dff" "#ff3df2"  ; 6–8 very annoying (cyan→purple→magenta)
+        "#ffd400" "#ff3b30")))         ; 9–10 screaming (yellow→red)
+
+    ;; Geometry
+    (indent-bars-width-frac 0.12)
+    (indent-bars-pad-frac 0.10)
+    (indent-bars-zigzag nil)
+    (indent-bars-pattern "."))
 #+end_src
 
 * Configurations
