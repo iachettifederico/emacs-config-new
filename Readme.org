@@ -592,14 +592,18 @@ It improves `completing-read` without introducing external frameworks.
 #+end_src
 
 *** Vertico directory support
+
+Add ivy-like behaviour for directories
+
 #+begin_src emacs-lisp
   (use-package vertico-directory
     :after vertico
-    :ensure nil ;; ships with vertico
+    :ensure nil
     :bind (:map vertico-map
-                ("/"     . vertico-directory-enter)
+                ("RET" . vertico-directory-enter)
                 ("DEL" . vertico-directory-delete-char)
-                ("M-DEL" . vertico-directory-delete-word)))
+                ("M-DEL" . vertico-directory-delete-word))
+    :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
 #+end_src
 
 ** Orderless
