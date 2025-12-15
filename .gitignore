@@ -6,3 +6,5 @@ Readme.el
 /.lsp-session-v1
 /transient/
 /places
+/backup-files/
+/bookmarks
