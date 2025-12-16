@@ -1326,3 +1326,11 @@ Use =H-+= to reindent buffers
   (use-package dockerfile-ts-mode
     :mode ("Dockerfile\\'" . dockerfile-ts-mode))
 #+end_src
+
+* Extra file extensions
+
+Add modes for some other file
+
+  #+begin_src emacs-lisp
+  (add-to-list 'auto-mode-alist '("Makefile\\..*" . makefile-mode))
+  #+end_src
