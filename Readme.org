@@ -1299,6 +1299,37 @@ This gives us diagnostics (including RuboCop), formatting, hover docs, jump-to-d
     :ensure t)
 #+end_src
 
+* Snippets
+
+Add snippets
+
+#+begin_src emacs-lisp
+(use-package yasnippet
+  :hook ((prog-mode text-mode conf-mode) . yas-minor-mode)
+  :config
+  (yas-reload-all))
+#+end_src
+
+#+begin_src emacs-lisp
+  ;;;###autoload
+  (defun fiachetti/recompile-snippets ()
+    (interactive)
+    (shell-command
+     (concat "rm -rf "
+             user-emacs-directory
+             "fiachetti/snippets/**/.yas-compiled-snippets.el*"))
+    (yas/recompile-all)
+    (yas/reload-all))
+#+end_src
+
+Add keybindings
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "S-<f7>") 'fiachetti/recompile-snippets)
+  (global-set-key (kbd "<backtab>") 'yas-expand-from-trigger-key)
+  (global-set-key (kbd "C-<tab>") 'yas-insert-snippet)
+#+end_src
+
 * Formatting buffers
 
 Select the best way to format the current buffer
