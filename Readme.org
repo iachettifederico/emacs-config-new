@@ -1159,9 +1159,13 @@ The idea is:
      default-directory
      (thing-at-point 'symbol t)))
 
-  (with-eval-after-load 'consult
-    (keymap-global-set "H-g" #'fiachetti/consult-ripgrep-project)
-    (keymap-global-set "H-G" #'fiachetti/consult-ripgrep-dir))
+#+end_src
+
+*** Global keybindings
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "H-g") #'fiachetti/consult-ripgrep-project)
+  (global-set-key (kbd "H-G") #'fiachetti/consult-ripgrep-dir)
 #+end_src
 
 ** Exporting results with Embark
