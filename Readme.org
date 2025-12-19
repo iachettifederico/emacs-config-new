@@ -375,6 +375,36 @@ Sort lines
   (global-set-key (kbd "H-l") 'sort-lines)
 #+end_src
 
+*** Open lines above and below
+
+Commands for opening a new line above and below the current line
+
+#+begin_src emacs-lisp
+  ;;;###autoload
+  (defun fiachetti/open-line-below ()
+    "Open an empty line above the current one and move."
+    (interactive)
+    (move-end-of-line nil)
+    (newline-and-indent))
+
+  ;;;###autoload
+  (defun fiachetti/open-line-above ()
+    "Open an empty line above the current one and move."
+    (interactive)
+    (move-beginning-of-line nil)
+    (newline-and-indent)
+    (forward-line -1)
+    (indent-according-to-mode))
+#+end_src
+
+Bind them
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-<return>") 'fiachetti/open-line-below)
+  (global-set-key (kbd "C-S-<return>") 'fiachetti/open-line-above)
+#+end_src
+
+
 * File commands
 
 Useful utilities for working with the current file.
