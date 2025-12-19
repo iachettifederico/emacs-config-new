@@ -1283,6 +1283,22 @@ This gives us diagnostics (including RuboCop), formatting, hover docs, jump-to-d
     (add-hook 'ruby-ts-mode #'lsp-deferred))
 #+end_src
 
+* Rspec
+
+#+begin_src emacs-lisp
+  (use-package rspec-mode
+    :bind (
+           ("H-r r"   . rspec-rerun)
+           ("H-r t"   . rspec-toggle-spec-and-target)
+           ("H-r v"   . rspec-verify)
+           ("H-r a"   . rspec-verify-all)
+           ("H-r H-a" . rspec-verify-all)
+           ("H-r s"   . rspec-verify-single)
+           ("H-r f"   . rspec-run-last-failed)
+           )
+    :ensure t)
+#+end_src
+
 * Formatting buffers
 
 Select the best way to format the current buffer
