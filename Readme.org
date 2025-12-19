@@ -102,6 +102,25 @@ Install doom themes and use =doom-ir-black=
 
 * Indentation
 
+** Set default indentation level
+
+#+begin_src emacs-lisp
+  (setq         indent-tabs-mode nil) ; And force use of spaces
+  (setq-default indent-tabs-mode nil)
+
+  (setq c-basic-offset          2) ; indents 2 chars
+  (setq tab-width               2) ; and 2 char wide for TAB
+
+  (setq web-mode-markup-indent-offset 2)
+  (setq web-mode-css-indent-offset 2)
+  (setq web-mode-code-indent-offset 2)
+
+  (setq css-indent-offset       2)
+  (setq js-indent-level         2)
+  (setq coffee-tab-width        2)
+  (setq typescript-indent-level 2)
+#+end_src
+
 ** Indentation guides (indent-bars)
 
 Add increasingly annoying indentation lines
