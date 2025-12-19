@@ -16,7 +16,16 @@
  '(git-commit-fill-column 1000)
  '(git-commit-finish-query-functions nil)
  '(git-commit-summary-max-length 1000)
- '(package-selected-packages nil)
+ '(package-selected-packages
+   '(corfu dired-narrow diredfl direnv dockerfile-mode doom-themes
+           edit-server embark-consult envrc expand-region htmlize
+           indent-bars ledger-mode lsp-docker magit marginalia
+           multiple-cursors nerd-icons-dired nix-mode orderless
+           org-modern ox-pandoc rspec-mode string-inflection sudo-edit
+           try use-package vertico wgrep yaml-mode yasnippet))
+ '(safe-local-variable-directories
+   '("/home/fedex/code/kalkomey/repos/newt/"
+     "/home/fedex/code/kalkomey/repos/kelp/"))
  '(safe-local-variable-values '((lsp-enabled-clients ruby-lsp) (lsp-mode . t))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
