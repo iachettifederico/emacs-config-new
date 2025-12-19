@@ -1370,6 +1370,6 @@ Use =H-+= to reindent buffers
 
 Add modes for some other file
 
-  #+begin_src emacs-lisp
+#+begin_src emacs-lisp
   (add-to-list 'auto-mode-alist '("Makefile\\..*" . makefile-mode))
-  #+end_src
+#+end_src
