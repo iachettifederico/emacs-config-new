@@ -1399,8 +1399,17 @@ Use =H-+= to reindent buffers
 
 * Extra file extensions
 
-Add modes for some other file
+Add modes for some other file types
+
+** Ruby
 
 #+begin_src emacs-lisp
   (add-to-list 'auto-mode-alist '("Makefile\\..*" . makefile-mode))
+#+end_src
+
+** JavaScript
+
+#+begin_src emacs-lisp
+  (add-to-list 'auto-mode-alist '("\\.js\\'" . js-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.jsx\\'" . js-ts-mode))
 #+end_src
