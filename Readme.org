@@ -404,7 +404,6 @@ Bind them
   (global-set-key (kbd "C-S-<return>") 'fiachetti/open-line-above)
 #+end_src
 
-
 * File commands
 
 Useful utilities for working with the current file.
@@ -1039,8 +1038,9 @@ This setup preserves existing muscle memory while keeping the configuration clea
 
 #+begin_src emacs-lisp
   (use-package multiple-cursors
-    :bind (("C-c a"   . mc/mark-all-like-this)
-           ("C-c C-a" . mc/edit-lines)
+    :bind (("C-c a"        . mc/mark-all-like-this)
+           ("C-c C-a"      . mc/edit-lines)
+           ("C-M-<return>" . mc/edit-lines)
 
            ("H-." . mc/mark-next-like-this)
            ("H-," . mc/mark-previous-like-this)
