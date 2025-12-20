@@ -1329,15 +1329,30 @@ This gives us diagnostics (including RuboCop), formatting, hover docs, jump-to-d
     :ensure t)
 #+end_src
 
+* Auto close parenthesis
+
+#+begin_src emacs-lisp
+  (use-package elec-pair
+    :ensure nil
+    :hook (after-init . electric-pair-mode)
+    :init
+    ;; If you also want auto-newline between pairs sometimes, toggle this later.
+    ;; (setq electric-pair-open-newline-between-pairs t)
+
+    :config
+    ;; Helpful defaults
+    (setq electric-pair-preserve-balance t))
+#+end_src
+
 * Snippets
 
 Add snippets
 
 #+begin_src emacs-lisp
-(use-package yasnippet
-  :hook ((prog-mode text-mode conf-mode) . yas-minor-mode)
-  :config
-  (yas-reload-all))
+  (use-package yasnippet
+    :hook ((prog-mode text-mode conf-mode) . yas-minor-mode)
+    :config
+    (yas-reload-all))
 #+end_src
 
 #+begin_src emacs-lisp
